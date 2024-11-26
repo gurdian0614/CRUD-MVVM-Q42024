@@ -19,6 +19,11 @@ namespace CRUD_MVVM_Q42024.ViewModels
             empleadoService = new EmpleadoService();
         }
 
+        private void Alerta(string Titulo, string Mensaje)
+        {
+            MainThread.BeginInvokeOnMainThread(async () => await App.Current!.MainPage!.DisplayAlert(Titulo, Mensaje, "Aceptar"));
+        }
+
         public void GetAll()
         {
             var getAll = empleadoService.GetAll();
@@ -36,7 +41,40 @@ namespace CRUD_MVVM_Q42024.ViewModels
         [RelayCommand]
         private async Task GoToAddEmpleadoView()
         {
-            await App.Current!.MainPage!.Navigation.PushAsync(new MainEmpleadoView());
+            await App.Current!.MainPage!.Navigation.PushAsync(new AddEmpleadoView());
+        }
+
+        [RelayCommand]
+        private async Task SelectEmpleado(Empleado empleado)
+        {
+            try
+            {
+                const string ACTUALIZAR = "Actualizar";
+                const string ELIMINAR = "Eliminar";
+
+                string res = await App.Current!.MainPage!.DisplayActionSheet("OPCIONES", "Cancelar", null, ACTUALIZAR, ELIMINAR);
+
+                if (res == ACTUALIZAR)
+                {
+                    //TODO agregar parametro al constructor
+                    await App.Current.MainPage.Navigation.PushAsync(new AddEmpleadoView(empleado));
+                }
+                else if (res == ELIMINAR) {
+                    bool respuesta = await App.Current!.MainPage!.DisplayAlert("ELIMINAR EMPLEADO", "¿Desea eliminar este empleado?", "Si", "No");
+
+                    if (respuesta) {
+                        int del = empleadoService.Delete(empleado);
+
+                        if (del > 0) {
+                            EmpleadoCollection.Remove(empleado);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Alerta("ERROR", ex.Message);
+            }
         }
     }
 }
