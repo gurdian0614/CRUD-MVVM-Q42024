@@ -15,6 +15,13 @@ namespace CRUD_MVVM_Q42024.Services
             SQLiteConnection = new SQLiteConnection(dbPath);
             // Create table
             SQLiteConnection.CreateTable<Empleado>();
+
+            //Temporal, despues se va a borrar
+            Empleado empleado = new Empleado();
+            empleado.Nombre = "Juan Perez";
+            empleado.Direccion = "SPS";
+            empleado.Email = "juanito@gmail.com";
+            Insert(empleado);
         }
 
         public List<Empleado> GetAll()
