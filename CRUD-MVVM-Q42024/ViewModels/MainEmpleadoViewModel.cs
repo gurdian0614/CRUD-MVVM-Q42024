@@ -56,7 +56,6 @@ namespace CRUD_MVVM_Q42024.ViewModels
 
                 if (res == ACTUALIZAR)
                 {
-                    //TODO agregar parametro al constructor
                     await App.Current.MainPage.Navigation.PushAsync(new AddEmpleadoView(empleado));
                 }
                 else if (res == ELIMINAR) {
@@ -66,6 +65,7 @@ namespace CRUD_MVVM_Q42024.ViewModels
                         int del = empleadoService.Delete(empleado);
 
                         if (del > 0) {
+                            Alerta("ELIMINAR EMPLEADO", "Empleado eliminado correctamente");
                             EmpleadoCollection.Remove(empleado);
                         }
                     }
